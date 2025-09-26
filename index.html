@@ -391,42 +391,123 @@
         /* Metrics Grid */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
         }
 
         .metric-card {
             background: #161b22;
             border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
             text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            border-color: #58a6ff;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #58a6ff, #1f6feb);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
         }
 
         .metric-icon {
-            width: 24px;
-            height: 24px;
+            width: 40px;
+            height: 40px;
             color: #58a6ff;
-            margin: 0 auto 12px;
+            margin: 0 auto 16px;
+            display: block;
         }
 
         .metric-value {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
             color: #f0f6fc;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            line-height: 1;
         }
 
         .metric-label {
             color: #8b949e;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 4px;
         }
 
         .metric-subtitle {
+            color: #6e7681;
+            font-size: 0.85rem;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        /* Chart Type Cards */
+        .chart-type-selector {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .chart-type-card {
+            background: #161b22;
+            border: 2px solid #30363d;
+            border-radius: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        .chart-type-card:hover {
+            border-color: #58a6ff;
+            background: #0d1117;
+            transform: translateY(-1px);
+        }
+
+        .chart-type-card.active {
+            border-color: #58a6ff;
+            background: #0d1117;
+            box-shadow: 0 0 0 1px #58a6ff;
+        }
+
+        .chart-type-card .icon {
+            width: 20px;
+            height: 20px;
             color: #8b949e;
-            font-size: 0.8rem;
-            margin-top: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .chart-type-card:hover .icon,
+        .chart-type-card.active .icon {
+            color: #58a6ff;
+        }
+
+        .chart-type-card .label {
+            color: #e6edf3;
+            font-weight: 500;
+            font-size: 14px;
         }
 
         /* Charts */
@@ -532,6 +613,16 @@
             .chart-controls {
                 justify-content: center;
             }
+            
+            .chart-type-selector {
+                justify-content: center;
+                gap: 12px;
+            }
+            
+            .chart-type-card {
+                min-width: 100px;
+                padding: 12px 16px;
+            }
         }
 
         /* Animations */
@@ -630,15 +721,6 @@
                     
                     <div class="chart-controls">
                         <div class="control-group">
-                            <label for="chartType">Type:</label>
-                            <select id="chartType" onchange="updateChart()">
-                                <option value="default">Heatmap</option>
-                                <option value="line">Line Chart</option>
-                                <option value="bar">Bar Chart</option>
-                            </select>
-                        </div>
-
-                        <div class="control-group">
                             <label for="dateRange">Range:</label>
                             <select id="dateRange" onchange="onDateRangeChange()">
                                 <option value="year">Last Year</option>
@@ -671,6 +753,25 @@
                     </div>
                 </div>
 
+                <!-- Chart Type Selector -->
+                <div class="chart-type-selector">
+                    <div class="chart-type-card active" data-chart-type="default" onclick="selectChartType('default')">
+                        <i data-lucide="calendar" class="icon"></i>
+                        <span class="label">Heatmap</span>
+                    </div>
+                    <div class="chart-type-card" data-chart-type="line" onclick="selectChartType('line')">
+                        <i data-lucide="trending-up" class="icon"></i>
+                        <span class="label">Line Chart</span>
+                    </div>
+                    <div class="chart-type-card" data-chart-type="bar" onclick="selectChartType('bar')">
+                        <i data-lucide="bar-chart-3" class="icon"></i>
+                        <span class="label">Bar Chart</span>
+                    </div>
+                </div>
+                
+                <!-- Hidden input for compatibility -->
+                <input type="hidden" id="chartType" value="default" />
+
                 <div id="chartContainer" class="chart-container" style="display: block;">
                     <div id="heatmapChart" class="chart-wrapper"></div>
                     <div id="lineChart" class="chart-wrapper" style="display: none;">
@@ -696,12 +797,11 @@
     <script>
         let allContributionData = []; // Store all fetched data
         let filteredContributionData = []; // Currently filtered data
-        let comparisonData = []; // Store comparison user data
-        let filteredComparisonData = []; // Currently filtered comparison data
+        let usersData = new Map(); // Store all users data: username -> {userData, contributions, filteredContributions}
         let currentUser = '';
-        let comparisonUser = '';
         let lineChartInstance = null;
         let barChartInstance = null;
+        const MAX_USERS = 5;
 
         // Fetch GitHub contributions using the contributions HTML endpoint
         async function fetchContributions() {
@@ -711,7 +811,15 @@
                 return;
             }
 
-            currentUser = username;
+            if (usersData.has(username)) {
+                showError('User already added');
+                return;
+            }
+
+            // Set as current user if this is the first user
+            if (usersData.size === 0) {
+                currentUser = username;
+            }
             showLoading(true);
             hideError();
             
@@ -741,11 +849,18 @@
                     throw new Error('No contribution data found');
                 }
                 
-                // Apply current date range filter
-                applyDateRangeFilter();
-                
                 // Fetch user profile info
                 const userData = await fetchUserProfile(username);
+                
+                // Store user data
+                usersData.set(username, {
+                    userData: userData,
+                    contributions: [...allContributionData],
+                    filteredContributions: []
+                });
+                
+                // Apply current date range filter
+                applyDateRangeFilterForAllUsers();
                 
                 // Show main app and hide welcome screen
                 document.getElementById('welcomeScreen').style.display = 'none';
@@ -753,8 +868,10 @@
                 
                 // Show user card and metrics
                 showUserCard(userData, true);
-                showMetrics(filteredContributionData);
-                updateChart();
+                updateDisplays();
+                
+                // Clear the input field
+                document.getElementById('githubHandle').value = '';
                 
             } catch (error) {
                 showError(`Error fetching data: ${error.message}`);
@@ -808,11 +925,9 @@
                     <span><i data-lucide="users" style="width: 12px; height: 12px; margin-right: 4px;"></i>${userData.followers || 0}</span>
                 </div>
                 <div class="user-actions">
-                    ${isPrimary ? '' : `
-                        <button class="icon-btn danger" onclick="removeUser('${userData.login}')" title="Remove User">
-                            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
-                        </button>
-                    `}
+                    <button class="icon-btn danger" onclick="removeUser('${userData.login}')" title="Remove User">
+                        <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                    </button>
                 </div>
             `;
             
@@ -860,12 +975,16 @@
                 return;
             }
 
-            if (username === currentUser) {
-                showError('Cannot compare user with themselves');
+            if (usersData.has(username)) {
+                showError('User already added');
                 return;
             }
 
-            comparisonUser = username;
+            if (usersData.size >= MAX_USERS) {
+                showError(`Maximum ${MAX_USERS} users allowed`);
+                return;
+            }
+
             showLoading(true);
             hideError();
             
@@ -876,7 +995,7 @@
                 // Check if user exists
                 const userResponse = await fetch(`https://api.github.com/users/${username}`);
                 if (!userResponse.ok) {
-                    throw new Error('Comparison user not found');
+                    throw new Error('User not found');
                 }
                 
                 // Fetch contributions
@@ -884,56 +1003,115 @@
                 const contributionsResponse = await fetch(proxyUrl);
                 
                 if (!contributionsResponse.ok) {
-                    throw new Error(`Failed to fetch comparison data (HTTP ${contributionsResponse.status})`);
+                    throw new Error(`Failed to fetch user data (HTTP ${contributionsResponse.status})`);
                 }
                 
                 const responseHtml = await contributionsResponse.text();                
-                comparisonData = parseContributionsHtml(responseHtml);
+                const contributionsData = parseContributionsHtml(responseHtml);
                 
-                if (comparisonData.length === 0) {
-                    throw new Error('No comparison data found');
+                if (contributionsData.length === 0) {
+                    throw new Error('No contribution data found');
                 }
-                
-                // Apply current date range filter to comparison data
-                applyComparisonFilter();
                 
                 // Fetch user profile and show card
                 const userData = await fetchUserProfile(username);
+                
+                // Store user data
+                usersData.set(username, {
+                    userData: userData,
+                    contributions: [...contributionsData],
+                    filteredContributions: []
+                });
+                
+                // Apply current date range filter to all users
+                applyDateRangeFilterForAllUsers();
+                
                 showUserCard(userData, false);
                 
                 // Hide add user input
                 toggleAddUser();
                 
-                // Update metrics and charts
-                showMetrics(filteredContributionData);
-                showComparisonStats();
-                updateChart();
+                // Update displays
+                updateDisplays();
+                
+                // Clear the comparison input field
+                document.getElementById('compareHandle').value = '';
                 
             } catch (error) {
-                showError(`Error fetching comparison data: ${error.message}`);
-                console.error('Comparison error:', error);
+                showError(`Error fetching user data: ${error.message}`);
+                console.error('Fetch error:', error);
             } finally {
                 showLoading(false);
             }
         }
 
-        // Clear comparison data
-        function clearComparison() {
-            // Remove comparison user card before clearing comparisonUser
-            const comparisonCard = document.getElementById(`user-card-${comparisonUser}`);
-            if (comparisonCard) {
-                comparisonCard.remove();
+        // Add new helper functions for multi-user management
+        function applyDateRangeFilterForAllUsers() {
+            const dateRange = document.getElementById('dateRange').value;
+            const { fromDate, toDate } = getDateRange(dateRange);
+            
+            for (const [username, userData] of usersData) {
+                userData.filteredContributions = userData.contributions.filter(item => {
+                    const itemDate = new Date(item.date);
+                    return itemDate >= new Date(fromDate) && itemDate <= new Date(toDate);
+                });
             }
             
-            comparisonData = [];
-            filteredComparisonData = [];
-            comparisonUser = '';
-            document.getElementById('compareHandle').value = '';
-            document.getElementById('comparisonStats').style.display = 'none';
+            // Set primary user's filtered data for backward compatibility
+            if (currentUser && usersData.has(currentUser)) {
+                filteredContributionData = usersData.get(currentUser).filteredContributions;
+            }
+        }
+        
+        function updateDisplays() {
+            if (currentUser && usersData.has(currentUser)) {
+                showMetrics(usersData.get(currentUser).filteredContributions);
+            }
             
-            // Update metrics and chart
-            showMetrics(filteredContributionData);
+            if (usersData.size > 1) {
+                showComparisonStats();
+            }
+            
             updateChart();
+        }
+        
+        // Remove user function updated
+        function removeUser(username) {
+            if (usersData.has(username)) {
+                usersData.delete(username);
+                
+                // If this was the current user, set a new current user
+                if (username === currentUser) {
+                    const remainingUsers = Array.from(usersData.keys());
+                    currentUser = remainingUsers.length > 0 ? remainingUsers[0] : '';
+                    
+                    // Update filteredContributionData for the new current user
+                    if (currentUser && usersData.has(currentUser)) {
+                        filteredContributionData = usersData.get(currentUser).filteredContributions;
+                    }
+                }
+                
+                // Remove user card
+                const userCard = document.getElementById(`user-card-${username}`);
+                if (userCard) {
+                    userCard.remove();
+                }
+                
+                // Update displays
+                if (usersData.size === 0) {
+                    // Show welcome screen if no users left
+                    document.getElementById('mainApp').style.display = 'none';
+                    document.getElementById('welcomeScreen').style.display = 'flex';
+                    document.getElementById('comparisonStats').style.display = 'none';
+                } else {
+                    updateDisplays();
+                    
+                    // Hide comparison stats if only one user left
+                    if (usersData.size < 2) {
+                        document.getElementById('comparisonStats').style.display = 'none';
+                    }
+                }
+            }
         }
 
         function getFullYearRange() {
@@ -981,25 +1159,7 @@
             };
         }
 
-        function applyDateRangeFilter() {
-            const dateRange = document.getElementById('dateRange').value;
-            const { fromDate, toDate } = getDateRange(dateRange);
-            
-            filteredContributionData = allContributionData.filter(item => {
-                const itemDate = new Date(item.date);
-                return itemDate >= new Date(fromDate) && itemDate <= new Date(toDate);
-            });
-        }
-
-        function applyComparisonFilter() {
-            const dateRange = document.getElementById('dateRange').value;
-            const { fromDate, toDate } = getDateRange(dateRange);
-            
-            filteredComparisonData = comparisonData.filter(item => {
-                const itemDate = new Date(item.date);
-                return itemDate >= new Date(fromDate) && itemDate <= new Date(toDate);
-            });
-        }
+        // Legacy functions removed - now handled by applyDateRangeFilterForAllUsers
 
         function aggregateData(data, aggregationType) {
             if (aggregationType === 'daily') {
@@ -1109,29 +1269,34 @@
         }
 
         function onDateRangeChange() {
-            // Filter existing data instead of re-fetching
-            if (currentUser && allContributionData.length > 0) {
-                applyDateRangeFilter();
-                showStats(filteredContributionData);
-                
-                // Also filter comparison data if it exists
-                if (comparisonUser && comparisonData.length > 0) {
-                    applyComparisonFilter();
-                    showComparisonStats();
-                }
-                
-                // Update metrics and chart
-                showMetrics(filteredContributionData);
-                updateChart();
+            // Filter existing data for all users instead of re-fetching
+            if (usersData.size > 0) {
+                applyDateRangeFilterForAllUsers();
+                updateDisplays();
             }
         }
 
         function resetZoom() {
-            if (lineChartInstance) {
+            const chartType = currentChartType;
+            
+            if (chartType === 'line' && lineChartInstance) {
                 lineChartInstance.resetZoom();
-            }
-            if (barChartInstance) {
+            } else if (chartType === 'bar' && barChartInstance) {
                 barChartInstance.resetZoom();
+            } else if (chartType === 'default') {
+                // For heatmap, just re-render it
+                updateChart();
+            }
+            
+            // Visual feedback
+            const button = event.target.closest('.icon-btn');
+            if (button) {
+                button.style.background = '#238636';
+                button.style.color = 'white';
+                setTimeout(() => {
+                    button.style.background = '#21262d';
+                    button.style.color = '#8b949e';
+                }, 200);
             }
         }
 
@@ -1143,14 +1308,36 @@
             }));
         }
 
-        function updateChart() {
-            if (!filteredContributionData.length) return;
+        // Global variable to track current chart type
+        let currentChartType = 'default';
+
+        function selectChartType(chartType) {
+            // Update active state
+            document.querySelectorAll('.chart-type-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-chart-type="${chartType}"]`).classList.add('active');
             
-            const chartType = document.getElementById('chartType').value;
+            // Update current chart type and hidden input for compatibility
+            currentChartType = chartType;
+            document.getElementById('chartType').value = chartType;
+            
+            // Update chart
+            updateChart();
+            
+            // Initialize icons
+            lucide.createIcons();
+        }
+
+        function updateChart() {
+            if (usersData.size === 0 || !currentUser || !usersData.has(currentUser)) return;
+            
+            const chartType = currentChartType;
             const isCumulative = document.getElementById('cumulative').checked;
             const aggregationType = document.getElementById('aggregation').value;
             
-            let processedData = aggregateData([...filteredContributionData], aggregationType);
+            // Use current user's data for the primary display
+            let processedData = aggregateData([...usersData.get(currentUser).filteredContributions], aggregationType);
             
             if (isCumulative) {
                 processedData = makeCumulative(processedData);
@@ -1238,36 +1425,34 @@
             
             const ctx = document.getElementById('lineCanvas').getContext('2d');
             
-            // Prepare datasets
-            const datasets = [{
-                label: currentUser || 'User',
-                data: data.map(d => d.contributions),
-                borderColor: '#58a6ff',
-                backgroundColor: 'rgba(88, 166, 255, 0.1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            }];
+            // Prepare datasets for all users
+            const datasets = [];
+            const colors = ['#58a6ff', '#f78166', '#39d353', '#d2a8ff', '#ffdf5d'];
+            let colorIndex = 0;
             
-            // Add comparison dataset if available
-            if (comparisonUser && filteredComparisonData.length > 0) {
+            for (const [username, userData] of usersData) {
                 const aggregationType = document.getElementById('aggregation').value;
-                let comparisonProcessedData = aggregateData([...filteredComparisonData], aggregationType);
+                let processedData = aggregateData([...userData.filteredContributions], aggregationType);
                 const isCumulative = document.getElementById('cumulative').checked;
                 
                 if (isCumulative) {
-                    comparisonProcessedData = makeCumulative(comparisonProcessedData);
+                    processedData = makeCumulative(processedData);
                 }
                 
+                const color = colors[colorIndex % colors.length];
+                const isFirst = colorIndex === 0;
+                
                 datasets.push({
-                    label: comparisonUser,
-                    data: comparisonProcessedData.map(d => d.contributions),
-                    borderColor: '#f78166',
-                    backgroundColor: 'rgba(247, 129, 102, 0.1)',
+                    label: username,
+                    data: processedData.map(d => d.contributions),
+                    borderColor: color,
+                    backgroundColor: `${color}1a`, // Add transparency
                     borderWidth: 2,
-                    fill: false,
+                    fill: isFirst,
                     tension: 0.4
                 });
+                
+                colorIndex++;
             }
             
             lineChartInstance = new Chart(ctx, {
@@ -1356,32 +1541,31 @@
             
             const ctx = document.getElementById('barCanvas').getContext('2d');
             
-            // Prepare datasets
-            const datasets = [{
-                label: currentUser || 'User',
-                data: data.map(d => d.contributions),
-                backgroundColor: '#58a6ff',
-                borderColor: '#1f6feb',
-                borderWidth: 1
-            }];
+            // Prepare datasets for all users
+            const datasets = [];
+            const colors = ['#58a6ff', '#f78166', '#39d353', '#d2a8ff', '#ffdf5d'];
+            let colorIndex = 0;
             
-            // Add comparison dataset if available
-            if (comparisonUser && filteredComparisonData.length > 0) {
+            for (const [username, userData] of usersData) {
                 const aggregationType = document.getElementById('aggregation').value;
-                let comparisonProcessedData = aggregateData([...filteredComparisonData], aggregationType);
+                let processedData = aggregateData([...userData.filteredContributions], aggregationType);
                 const isCumulative = document.getElementById('cumulative').checked;
                 
                 if (isCumulative) {
-                    comparisonProcessedData = makeCumulative(comparisonProcessedData);
+                    processedData = makeCumulative(processedData);
                 }
                 
+                const color = colors[colorIndex % colors.length];
+                
                 datasets.push({
-                    label: comparisonUser,
-                    data: comparisonProcessedData.map(d => d.contributions),
-                    backgroundColor: '#f78166',
-                    borderColor: '#e85d2d',
+                    label: username,
+                    data: processedData.map(d => d.contributions),
+                    backgroundColor: color,
+                    borderColor: color,
                     borderWidth: 1
                 });
+                
+                colorIndex++;
             }
             
             barChartInstance = new Chart(ctx, {
@@ -1510,70 +1694,56 @@
         }
 
         function showComparisonStats() {
-            const user1Data = filteredContributionData;
-            const user2Data = filteredComparisonData;
+            if (usersData.size < 2) {
+                document.getElementById('comparisonStats').style.display = 'none';
+                return;
+            }
             
-            // Calculate stats for both users
-            const user1Stats = {
-                total: user1Data.reduce((sum, item) => sum + item.contributions, 0),
-                average: Math.round(user1Data.reduce((sum, item) => sum + item.contributions, 0) / user1Data.length * 10) / 10,
-                maxContributions: user1Data.reduce((max, item) => Math.max(max, item.contributions), 0),
-                activeDays: user1Data.filter(item => item.contributions > 0).length
-            };
+            // Calculate stats for all users
+            const userStats = new Map();
+            for (const [username, userData] of usersData) {
+                const data = userData.filteredContributions;
+                userStats.set(username, {
+                    total: data.reduce((sum, item) => sum + item.contributions, 0),
+                    average: Math.round(data.reduce((sum, item) => sum + item.contributions, 0) / data.length * 10) / 10,
+                    maxContributions: data.reduce((max, item) => Math.max(max, item.contributions), 0),
+                    activeDays: data.filter(item => item.contributions > 0).length
+                });
+            }
             
-            const user2Stats = {
-                total: user2Data.reduce((sum, item) => sum + item.contributions, 0),
-                average: Math.round(user2Data.reduce((sum, item) => sum + item.contributions, 0) / user2Data.length * 10) / 10,
-                maxContributions: user2Data.reduce((max, item) => Math.max(max, item.contributions), 0),
-                activeDays: user2Data.filter(item => item.contributions > 0).length
-            };
-            
-            // Create comparison table
+            // Create comparison table with all users
+            const usernames = Array.from(usersData.keys());
             const comparisonTable = document.getElementById('comparisonTable');
+            
+            let headerHTML = '<tr><th>Metric</th>';
+            usernames.forEach(username => {
+                headerHTML += `<th>${username}</th>`;
+            });
+            headerHTML += '</tr>';
+            
+            let bodyHTML = '';
+            const metrics = [
+                { key: 'total', label: 'Total Contributions', icon: 'trending-up' },
+                { key: 'average', label: 'Daily Average', icon: 'bar-chart-3' },
+                { key: 'maxContributions', label: 'Best Day', icon: 'flame' },
+                { key: 'activeDays', label: 'Active Days', icon: 'zap' }
+            ];
+            
+            metrics.forEach(metric => {
+                bodyHTML += `<tr><td><i data-lucide="${metric.icon}" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle;"></i>${metric.label}</td>`;
+                usernames.forEach(username => {
+                    const value = metric.key === 'average' ? 
+                        userStats.get(username)[metric.key].toFixed(1) : 
+                        userStats.get(username)[metric.key];
+                    bodyHTML += `<td>${value}</td>`;
+                });
+                bodyHTML += '</tr>';
+            });
+            
             comparisonTable.innerHTML = `
                 <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th>Metric</th>
-                            <th>${currentUser}</th>
-                            <th>${comparisonUser}</th>
-                            <th>Difference</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><i data-lucide="trending-up" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle;"></i>Total Contributions</td>
-                            <td>${user1Stats.total}</td>
-                            <td>${user2Stats.total}</td>
-                            <td class="${user1Stats.total >= user2Stats.total ? 'user-better' : 'user-worse'}">
-                                ${user1Stats.total >= user2Stats.total ? '+' : ''}${user1Stats.total - user2Stats.total}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><i data-lucide="bar-chart-3" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle;"></i>Daily Average</td>
-                            <td>${user1Stats.average}</td>
-                            <td>${user2Stats.average}</td>
-                            <td class="${user1Stats.average >= user2Stats.average ? 'user-better' : 'user-worse'}">
-                                ${user1Stats.average >= user2Stats.average ? '+' : ''}${(user1Stats.average - user2Stats.average).toFixed(1)}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><i data-lucide="flame" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle;"></i>Best Day</td>
-                            <td>${user1Stats.maxContributions}</td>
-                            <td>${user2Stats.maxContributions}</td>
-                            <td class="${user1Stats.maxContributions >= user2Stats.maxContributions ? 'user-better' : 'user-worse'}">
-                                ${user1Stats.maxContributions >= user2Stats.maxContributions ? '+' : ''}${user1Stats.maxContributions - user2Stats.maxContributions}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><i data-lucide="zap" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle;"></i>Active Days</td>
-                            <td>${user1Stats.activeDays}</td>
-                            <td>${user2Stats.activeDays}</td>
-                            <td class="${user1Stats.activeDays >= user2Stats.activeDays ? 'user-better' : 'user-worse'}">
-                                ${user1Stats.activeDays >= user2Stats.activeDays ? '+' : ''}${user1Stats.activeDays - user2Stats.activeDays}
-                            </td>
-                        </tr>
-                    </tbody>
+                    <thead>${headerHTML}</thead>
+                    <tbody>${bodyHTML}</tbody>
                 </table>
             `;
             
