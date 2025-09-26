@@ -816,7 +816,10 @@
                 return;
             }
 
-            currentUser = username;
+            // Set as current user if this is the first user
+            if (usersData.size === 0) {
+                currentUser = username;
+            }
             showLoading(true);
             hideError();
             
@@ -866,6 +869,9 @@
                 // Show user card and metrics
                 showUserCard(userData, true);
                 updateDisplays();
+                
+                // Clear the input field
+                document.getElementById('githubHandle').value = '';
                 
             } catch (error) {
                 showError(`Error fetching data: ${error.message}`);
@@ -919,11 +925,9 @@
                     <span><i data-lucide="users" style="width: 12px; height: 12px; margin-right: 4px;"></i>${userData.followers || 0}</span>
                 </div>
                 <div class="user-actions">
-                    ${isPrimary ? '' : `
-                        <button class="icon-btn danger" onclick="removeUser('${userData.login}')" title="Remove User">
-                            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
-                        </button>
-                    `}
+                    <button class="icon-btn danger" onclick="removeUser('${userData.login}')" title="Remove User">
+                        <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                    </button>
                 </div>
             `;
             
@@ -1030,6 +1034,9 @@
                 // Update displays
                 updateDisplays();
                 
+                // Clear the comparison input field
+                document.getElementById('compareHandle').value = '';
+                
             } catch (error) {
                 showError(`Error fetching user data: ${error.message}`);
                 console.error('Fetch error:', error);
@@ -1077,6 +1084,11 @@
                 if (username === currentUser) {
                     const remainingUsers = Array.from(usersData.keys());
                     currentUser = remainingUsers.length > 0 ? remainingUsers[0] : '';
+                    
+                    // Update filteredContributionData for the new current user
+                    if (currentUser && usersData.has(currentUser)) {
+                        filteredContributionData = usersData.get(currentUser).filteredContributions;
+                    }
                 }
                 
                 // Remove user card
@@ -1090,8 +1102,14 @@
                     // Show welcome screen if no users left
                     document.getElementById('mainApp').style.display = 'none';
                     document.getElementById('welcomeScreen').style.display = 'flex';
+                    document.getElementById('comparisonStats').style.display = 'none';
                 } else {
                     updateDisplays();
+                    
+                    // Hide comparison stats if only one user left
+                    if (usersData.size < 2) {
+                        document.getElementById('comparisonStats').style.display = 'none';
+                    }
                 }
             }
         }
