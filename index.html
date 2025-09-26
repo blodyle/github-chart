@@ -34,14 +34,14 @@
             width: 320px;
             background: #161b22;
             border-right: 1px solid #30363d;
-            padding: 20px;
+            padding: 12px;
             overflow-y: auto;
             flex-shrink: 0;
         }
 
         .main-content {
             flex: 1;
-            padding: 20px;
+            padding: 12px;
             overflow-x: auto;
         }
 
@@ -55,12 +55,12 @@
 
         .welcome-content {
             max-width: 500px;
-            padding: 40px;
+            padding: 20px;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 24px;
         }
 
         .header h1 {
@@ -78,8 +78,8 @@
             background: #161b22;
             border: 1px solid #30363d;
             border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
         .input-group {
@@ -180,8 +180,8 @@
             background: #161b22;
             border: 1px solid #30363d;
             border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
             min-height: 400px;
             display: none;
         }
@@ -242,8 +242,8 @@
             background: #161b22;
             border: 1px solid #30363d;
             border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
         }
 
         .comparison-table {
@@ -391,16 +391,16 @@
         /* Metrics Grid */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
         .metric-card {
             background: #161b22;
             border: 1px solid #30363d;
-            border-radius: 16px;
-            padding: 24px;
+            border-radius: 12px;
+            padding: 16px;
             text-align: center;
             transition: transform 0.2s ease, border-color 0.2s ease;
             position: relative;
@@ -515,7 +515,7 @@
             background: #161b22;
             border: 1px solid #30363d;
             border-radius: 12px;
-            padding: 30px;
+            padding: 16px;
         }
 
         .chart-header {
@@ -556,31 +556,46 @@
 
         /* Welcome Screen */
         .welcome-title {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             color: #f0f6fc;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .welcome-subtitle {
             color: #8b949e;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
+            font-size: 1rem;
+            margin-bottom: 24px;
+            line-height: 1.5;
         }
 
         .welcome-input-group {
             display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
         }
 
         .welcome-input-group input {
             flex: 1;
-            padding: 12px 16px;
+            min-width: 200px;
+            padding: 14px 16px;
             background: #0d1117;
             border: 1px solid #30363d;
             border-radius: 8px;
             color: #e6edf3;
             font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .welcome-input-group input:focus {
+            outline: none;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+
+        .welcome-input-group input::placeholder {
+            color: #8b949e;
+            font-size: 15px;
         }
 
         .welcome-input-group input:focus {
@@ -588,40 +603,231 @@
             border-color: #58a6ff;
         }
 
+        /* Mobile Table Scroll Container */
+        .table-scroll-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+            margin: 0 -4px;
+            padding: 0 4px;
+        }
+        
+        .table-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .table-scroll-container::-webkit-scrollbar-track {
+            background: #161b22;
+            border-radius: 4px;
+        }
+        
+        .table-scroll-container::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        
+        .table-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            
             .app-container {
                 flex-direction: column;
+                padding: 0;
+                margin: 0;
             }
             
             .sidebar {
                 width: 100%;
                 border-right: none;
                 border-bottom: 1px solid #30363d;
+                padding: 8px;
+            }
+            
+            .main-content {
+                padding: 8px;
+            }
+            
+            .welcome-content {
+                padding: 16px;
+                margin: 0 8px;
+            }
+            
+            .welcome-title {
+                font-size: 1.8rem;
+            }
+            
+            .welcome-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .welcome-input-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .welcome-input-group input {
+                min-width: unset;
+                width: 100%;
+            }
+            
+            .btn {
+                padding: 14px 20px;
+                width: 100%;
+                justify-content: center;
+                display: flex;
+                align-items: center;
             }
             
             .metrics-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 15px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+            
+            .metric-card {
+                padding: 12px;
+            }
+            
+            .metric-value {
+                font-size: 1.8rem;
+            }
+            
+            .metric-label {
+                font-size: 0.85rem;
             }
             
             .chart-header {
                 flex-direction: column;
                 align-items: stretch;
+                gap: 12px;
             }
             
             .chart-controls {
-                justify-content: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            
+            .control-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+                min-width: 100px;
+                flex: 1;
+            }
+            
+            .control-group label {
+                font-size: 12px;
+                text-align: center;
+                font-weight: 600;
+            }
+            
+            .control-group select {
+                padding: 10px 8px;
+                font-size: 14px;
+                text-align: center;
+                min-height: 44px;
+            }
+            
+            .icon-btn {
+                min-height: 44px;
+                min-width: 44px;
+                padding: 12px;
             }
             
             .chart-type-selector {
                 justify-content: center;
-                gap: 12px;
+                gap: 8px;
+                flex-wrap: wrap;
             }
             
             .chart-type-card {
-                min-width: 100px;
+                min-width: 90px;
+                padding: 10px 12px;
+                flex: 1;
+                max-width: 120px;
+            }
+            
+            .chart-type-card .label {
+                font-size: 12px;
+            }
+            
+            .comparison-table {
+                min-width: 400px;
+                font-size: 14px;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 8px 12px;
+                white-space: nowrap;
+            }
+            
+            .user-card {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+            
+            .user-header {
+                margin-bottom: 8px;
+            }
+            
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .user-info h3 {
+                font-size: 14px;
+            }
+            
+            .user-info p {
+                font-size: 12px;
+            }
+        }
+
+        /* Extra small mobile devices */
+        @media (max-width: 480px) {
+            .welcome-title {
+                font-size: 1.6rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .chart-type-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .chart-type-card {
+                max-width: none;
+                min-width: 0;
+                justify-content: flex-start;
                 padding: 12px 16px;
+            }
+            
+            .control-group {
+                min-width: 80px;
+            }
+            
+            .comparison-table {
+                min-width: 350px;
+                font-size: 13px;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 6px 8px;
             }
         }
 
@@ -631,24 +837,6 @@
             to { transform: rotate(360deg); }
         }
 
-        @media (max-width: 768px) {
-            .input-group {
-                flex-direction: column;
-            }
-
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .control-group {
-                justify-content: space-between;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -659,7 +847,7 @@
             <p class="welcome-subtitle">Visualize and compare GitHub contributions with interactive charts</p>
             
             <div class="welcome-input-group">
-                <input type="text" id="githubHandle" placeholder="Enter GitHub username (e.g., torvalds, octocat)" />
+                <input type="text" id="githubHandle" placeholder="Enter GitHub username" />
                 <button class="btn" onclick="fetchContributions()">
                     <i data-lucide="github" style="width: 16px; height: 16px; margin-right: 8px;"></i>
                     Load Profile
@@ -1741,10 +1929,12 @@
             });
             
             comparisonTable.innerHTML = `
-                <table class="comparison-table">
-                    <thead>${headerHTML}</thead>
-                    <tbody>${bodyHTML}</tbody>
-                </table>
+                <div class="table-scroll-container">
+                    <table class="comparison-table">
+                        <thead>${headerHTML}</thead>
+                        <tbody>${bodyHTML}</tbody>
+                    </table>
+                </div>
             `;
             
             document.getElementById('comparisonStats').style.display = 'block';
