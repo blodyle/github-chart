@@ -2103,93 +2103,241 @@
                 
                 const maxContributions = Math.max(...userFilteredData.map(d => d.contributions));
                 
-                // Create SVG for this user - bigger
+                // Create container for labels and chart
+                const chartContainer = document.createElement('div');
+                chartContainer.style.position = 'relative';
+                
+                // Calculate weeks needed and adjust for starting on Sunday
+                // Parse dates as local dates to avoid timezone issues
+                const firstDate = new Date(userFilteredData[0].date + 'T00:00:00');
+                const lastDate = new Date(userFilteredData[userFilteredData.length - 1].date + 'T00:00:00');
+                
+                // Find the Sunday before or on the first date
+                const startDate = new Date(firstDate);
+                startDate.setDate(firstDate.getDate() - firstDate.getDay()); // Move to Sunday
+                
+                // Find the Saturday after or on the last date
+                const endDate = new Date(lastDate);
+                endDate.setDate(lastDate.getDate() + (6 - lastDate.getDay())); // Move to Saturday
+                
+                // Calculate total weeks
+                const totalDays = Math.ceil((endDate - startDate) / (24 * 60 * 60 * 1000)) + 1;
+                const totalWeeks = Math.ceil(totalDays / 7);
+                
+                // Create data map for quick lookup
+                const dataMap = new Map();
+                userFilteredData.forEach(item => {
+                    dataMap.set(item.date, item.contributions);
+                });
+                
+                // Add margins for labels
+                const labelMarginTop = 25;
+                const labelMarginLeft = 30;
+                const svgWidth = totalWeeks * (cellSize + gap) + labelMarginLeft;
+                const svgHeight = 7 * (cellSize + gap) + labelMarginTop;
+                
+                // Create SVG for this user - bigger with margins for labels
                 const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svg.style.width = '100%';
-                svg.style.height = '160px'; // Bigger height
-                svg.style.minHeight = '160px';
-                
-                const weeks = Math.ceil(userFilteredData.length / 7);
-                const svgWidth = weeks * (cellSize + gap);
-                const svgHeight = 7 * (cellSize + gap);
+                svg.style.height = '180px'; // Increased height for labels
+                svg.style.minHeight = '180px';
                 svg.setAttribute('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
                 svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
                 
-                userFilteredData.forEach((item, index) => {
-                    const week = Math.floor(index / 7);
-                    const day = index % 7;
-                    const intensity = maxContributions > 0 ? item.contributions / maxContributions : 0;
+                // Add month labels
+                let currentMonth = -1;
+                for (let week = 0; week < totalWeeks; week++) {
+                    const weekDate = new Date(startDate);
+                    weekDate.setDate(startDate.getDate() + week * 7);
+                    const month = weekDate.getMonth();
+                    const monthName = weekDate.toLocaleDateString('en-US', { month: 'short' });
                     
-                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                    rect.setAttribute('x', week * (cellSize + gap));
-                    rect.setAttribute('y', day * (cellSize + gap));
-                    rect.setAttribute('width', cellSize);
-                    rect.setAttribute('height', cellSize);
-                    rect.setAttribute('rx', 3);
-                    
-                    // Use exact same color scheme as line/bar charts
-                    const baseColor = userData.dominantColor || '#58a6ff';
-                    let color;
-                    if (intensity === 0) {
-                        color = '#161b22'; // Empty state
-                    } else {
-                        // Create solid colors with varying opacity based on intensity
-                        const rgb = hexToRgb(baseColor) || { r: 88, g: 166, b: 255 };
-                        // Use different intensities: 0.3, 0.5, 0.7, 1.0
-                        let alpha;
-                        if (intensity <= 0.25) alpha = '4d'; // 30% opacity
-                        else if (intensity <= 0.5) alpha = '80'; // 50% opacity
-                        else if (intensity <= 0.75) alpha = 'b3'; // 70% opacity
-                        else alpha = 'ff'; // 100% opacity
-                        
-                        color = `#${rgb.r.toString(16).padStart(2, '0')}${rgb.g.toString(16).padStart(2, '0')}${rgb.b.toString(16).padStart(2, '0')}${alpha}`;
+                    // Show first month and when month changes
+                    if (month !== currentMonth) {
+                        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        text.setAttribute('x', labelMarginLeft + week * (cellSize + gap));
+                        text.setAttribute('y', 15);
+                        text.setAttribute('font-size', '11px');
+                        text.setAttribute('font-family', 'system-ui, -apple-system, sans-serif');
+                        text.setAttribute('fill', '#8b949e');
+                        text.textContent = monthName;
+                        svg.appendChild(text);
+                        currentMonth = month;
                     }
-                    
-                    rect.setAttribute('fill', color);
-                    rect.setAttribute('stroke', '#1b1f23');
-                    rect.setAttribute('stroke-width', '1');
-                    rect.style.cursor = 'pointer';
-                    
-                    // Add hover events for tooltip
-                    rect.addEventListener('mouseenter', function(e) {
-                        const date = new Date(item.date);
-                        const formattedDate = date.toLocaleDateString('en-US', { 
-                            weekday: 'short', 
-                            month: 'short', 
-                            day: 'numeric',
-                            year: 'numeric'
-                        });
-                        
-                        // Use unified tooltip function
-                        const tooltipContent = generateTooltipContent([{
-                            username: username,
-                            contributions: item.contributions,
-                            color: baseColor
-                        }], formattedDate);
-                        
-                        sharedTooltip.innerHTML = tooltipContent;
-                        
-                        // Position tooltip at mouse cursor
-                        sharedTooltip.style.left = e.clientX + 'px';
-                        sharedTooltip.style.top = e.clientY + 'px';
-                        sharedTooltip.style.opacity = '1';
-                    });
-                    
-                    rect.addEventListener('mouseleave', function() {
-                        sharedTooltip.style.opacity = '0';
-                    });
-                    
-                    rect.addEventListener('mousemove', function(e) {
-                        sharedTooltip.style.left = e.clientX + 'px';
-                        sharedTooltip.style.top = e.clientY + 'px';
-                    });
-                    
-                    svg.appendChild(rect);
+                }
+                
+                // Add day labels (Mon, Wed, Fri pattern like GitHub)
+                const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                [1, 3, 5].forEach(dayIndex => { // Show Mon, Wed, Fri
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', 5);
+                    text.setAttribute('y', labelMarginTop + dayIndex * (cellSize + gap) + cellSize / 2 + 3);
+                    text.setAttribute('font-size', '9px');
+                    text.setAttribute('font-family', 'system-ui, -apple-system, sans-serif');
+                    text.setAttribute('fill', '#8b949e');
+                    text.setAttribute('text-anchor', 'start');
+                    text.textContent = dayLabels[dayIndex];
+                    svg.appendChild(text);
                 });
+                
+                // Generate grid
+                for (let week = 0; week < totalWeeks; week++) {
+                    for (let day = 0; day < 7; day++) {
+                        const currentDate = new Date(startDate);
+                        currentDate.setDate(startDate.getDate() + week * 7 + day);
+                        // Use local date string to match our data format
+                        const year = currentDate.getFullYear();
+                        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                        const dayOfMonth = String(currentDate.getDate()).padStart(2, '0');
+                        const dateStr = `${year}-${month}-${dayOfMonth}`;
+                        
+                        // Always render the cell for proper grid alignment
+                        // Check if this date has contribution data
+                        const contributions = dataMap.get(dateStr) || 0;
+                        const intensity = maxContributions > 0 ? contributions / maxContributions : 0;
+                        
+                        // Only show empty cells for dates within a reasonable range
+                        const isWithinDataPeriod = currentDate >= firstDate && currentDate <= lastDate;
+                    
+                        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                        rect.setAttribute('x', labelMarginLeft + week * (cellSize + gap));
+                        rect.setAttribute('y', labelMarginTop + day * (cellSize + gap));
+                        rect.setAttribute('width', cellSize);
+                        rect.setAttribute('height', cellSize);
+                        rect.setAttribute('rx', 3);
+                        
+                        // Use exact same color scheme as line/bar charts
+                        const baseColor = userData.dominantColor || '#58a6ff';
+                        let color;
+                        let stroke = '#1b1f23';
+                        
+                        // Show different colors for dates outside data period vs no contributions
+                        if (!isWithinDataPeriod) {
+                            color = 'transparent'; // Very dark for dates outside data period
+                            stroke = 'transparent';
+                        } else if (intensity === 0) {
+                            color = '#161b22'; // Empty state for dates with no contributions
+                        } else {
+                            // Create solid colors with varying opacity based on intensity
+                            const rgb = hexToRgb(baseColor) || { r: 88, g: 166, b: 255 };
+                            // Use different intensities: 0.3, 0.5, 0.7, 1.0
+                            let alpha;
+                            if (intensity <= 0.25) alpha = '4d'; // 30% opacity
+                            else if (intensity <= 0.5) alpha = '80'; // 50% opacity
+                            else if (intensity <= 0.75) alpha = 'b3'; // 70% opacity
+                            else alpha = 'ff'; // 100% opacity
+                            
+                            color = `#${rgb.r.toString(16).padStart(2, '0')}${rgb.g.toString(16).padStart(2, '0')}${rgb.b.toString(16).padStart(2, '0')}${alpha}`;
+                        }
+                        
+                        rect.setAttribute('fill', color);
+                        rect.setAttribute('stroke', stroke);
+                        rect.setAttribute('stroke-width', '1');
+                        
+                        // Only add interactivity for dates within the data period
+                        if (isWithinDataPeriod) {
+                            rect.style.cursor = 'pointer';
+                            
+                            // Add hover events for tooltip
+                            rect.addEventListener('mouseenter', function(e) {
+                                const formattedDate = currentDate.toLocaleDateString('en-US', { 
+                                    weekday: 'short', 
+                                    month: 'short', 
+                                    day: 'numeric',
+                                    year: 'numeric'
+                                });
+                                
+                                // Use unified tooltip function
+                                const tooltipContent = generateTooltipContent([{
+                                    username: username,
+                                    contributions: contributions,
+                                    color: baseColor
+                                }], formattedDate);
+                                
+                                sharedTooltip.innerHTML = tooltipContent;
+                                
+                                // Position tooltip at mouse cursor
+                                sharedTooltip.style.left = e.clientX + 'px';
+                                sharedTooltip.style.top = e.clientY + 'px';
+                                sharedTooltip.style.opacity = '1';
+                            });
+                            
+                            rect.addEventListener('mouseleave', function() {
+                                sharedTooltip.style.opacity = '0';
+                            });
+                            
+                            rect.addEventListener('mousemove', function(e) {
+                                sharedTooltip.style.left = e.clientX + 'px';
+                                sharedTooltip.style.top = e.clientY + 'px';
+                            });
+                        }
+                        
+                        svg.appendChild(rect);
+                    }
+                }
                 
                 userContainer.appendChild(svg);
                 container.appendChild(userContainer);
             }
+            
+            // Add contribution intensity legend after all users
+            addContributionIntensityLegend(container);
+        }
+        
+        // Function to add GitHub-style contribution intensity legend
+        function addContributionIntensityLegend(container) {
+            // For multiple users, show a generic legend
+            const visibleUsers = Array.from(usersData.entries()).filter(([username]) => !hiddenHeatmapUsers.has(username));
+            
+            if (visibleUsers.length === 0) return;
+            
+            const legendContainer = document.createElement('div');
+            legendContainer.style.display = 'flex';
+            legendContainer.style.alignItems = 'center';
+            legendContainer.style.justifyContent = 'flex-end';
+            legendContainer.style.gap = '4px';
+            legendContainer.style.marginTop = '20px';
+            legendContainer.style.fontSize = '11px';
+            legendContainer.style.color = '#8b949e';
+            legendContainer.style.fontFamily = 'system-ui, -apple-system, sans-serif';
+            
+            // "Less" text
+            const lessText = document.createElement('span');
+            lessText.textContent = 'Less';
+            lessText.style.marginRight = '4px';
+            legendContainer.appendChild(lessText);
+            
+            // Use the first visible user's color for the legend
+            const firstUser = visibleUsers[0][1];
+            const baseColor = firstUser.dominantColor || '#58a6ff';
+            const rgb = hexToRgb(baseColor) || { r: 88, g: 166, b: 255 };
+            
+            // Create intensity squares using the user's color
+            const intensities = ['00', '4d', '80', 'b3', 'ff']; // 0%, 30%, 50%, 70%, 100%
+            intensities.forEach((alpha, index) => {
+                const square = document.createElement('div');
+                square.style.width = '10px';
+                square.style.height = '10px';
+                
+                if (index === 0) {
+                    square.style.backgroundColor = '#161b22'; // Empty state
+                } else {
+                    const color = `#${rgb.r.toString(16).padStart(2, '0')}${rgb.g.toString(16).padStart(2, '0')}${rgb.b.toString(16).padStart(2, '0')}${alpha}`;
+                    square.style.backgroundColor = color;
+                }
+                
+                square.style.border = '1px solid #1b1f23';
+                square.style.borderRadius = '2px';
+                legendContainer.appendChild(square);
+            });
+            
+            // "More" text
+            const moreText = document.createElement('span');
+            moreText.textContent = 'More';
+            moreText.style.marginLeft = '4px';
+            legendContainer.appendChild(moreText);
+            
+            container.appendChild(legendContainer);
         }
         
         // Helper function to convert hex color to RGB
@@ -2654,8 +2802,8 @@
                 
                 const smallAvatar = document.createElement('img');
                 smallAvatar.src = userData.userData.avatar_url;
-                smallAvatar.style.width = '20px';
-                smallAvatar.style.height = '20px';
+                smallAvatar.style.width = '40px';
+                smallAvatar.style.height = '40px';
                 smallAvatar.style.borderRadius = '50%';
                 smallAvatar.style.border = `2px solid ${userData.dominantColor}`;
                 smallAvatar.style.objectFit = 'cover';
@@ -2701,13 +2849,13 @@
                 
                 // Create day-specific opacity variations to make days easily distinguishable
                 const dayOpacityMap = {
-                    'Sunday': 'FF',     // Full opacity for weekend
-                    'Monday': '99',     // Lower opacity for Monday blues (0.6)
-                    'Tuesday': 'B3',    // Gradually increasing (0.7)
-                    'Wednesday': 'CC',  // Mid-week (0.8)
-                    'Thursday': 'E6',   // Almost there (0.9)
-                    'Friday': 'F2',     // TGIF energy (0.95)
-                    'Saturday': 'FF'    // Full opacity for weekend
+                    'Sunday': 'F1',     // Full opacity for weekend
+                    'Monday': '62',     // Lower opacity for Monday blues (0.6)
+                    'Tuesday': '81',    // Gradually increasing (0.7)
+                    'Wednesday': '9A',  // Mid-week (0.8)
+                    'Thursday': 'A2',   // Almost there (0.9)
+                    'Friday': 'BD',     // TGIF energy (0.95)
+                    'Saturday': 'CB'    // Full opacity for weekend
                 };
                 
                 const colors = visibleDayNames.map((dayName) => {
@@ -2717,8 +2865,6 @@
                         `${baseColor}${opacity}`;
                 });
 
-                console.log(colors);
-                
                 // Create canvas for this user
                 const canvas = document.createElement('canvas');
                 canvas.style.width = '100%';
@@ -2799,9 +2945,11 @@
                                         sharedTooltip.innerHTML = tooltipContent;
                                     }
 
-                                    // Position tooltip at mouse cursor  
-                                    sharedTooltip.style.left = tooltip.x + 'px';
-                                    sharedTooltip.style.top = tooltip.y + 'px';
+                                    // Position tooltip at mouse cursor using global coordinates
+                                    const canvasPosition = Chart.helpers.getRelativePosition(context.chart.canvas.getBoundingClientRect(), context.chart);
+                                    const rect = context.chart.canvas.getBoundingClientRect();
+                                    sharedTooltip.style.left = (rect.left + tooltip.caretX) + 'px';
+                                    sharedTooltip.style.top = (rect.top + tooltip.caretY) + 'px';
                                     sharedTooltip.style.opacity = '1';
                                 }
                             }
