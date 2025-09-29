@@ -33,10 +33,10 @@
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(48, 54, 61, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(48, 54, 61, 0.3) 1px, transparent 1px),
-                linear-gradient(rgba(48, 54, 61, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(48, 54, 61, 0.1) 1px, transparent 1px);
+                linear-gradient(#30363d4d 1px, transparent 1px),
+                linear-gradient(90deg, #30363d4d 1px, transparent 1px),
+                linear-gradient(#30363d1a 1px, transparent 1px),
+                linear-gradient(90deg, #30363d1a 1px, transparent 1px);
             background-size: 
                 120px 120px,
                 120px 120px,
@@ -63,7 +63,7 @@
 
         .sidebar {
             width: 320px;
-            background: rgba(22, 27, 34, 0.3);
+            background: #161b224d;
             padding: 20px;
             overflow-y: auto;
             flex-shrink: 0;
@@ -92,7 +92,7 @@
         .welcome-content {
             max-width: 600px;
             padding: 48px;
-            background: rgba(22, 27, 34, 0.4);
+            background: #161b2266;
             backdrop-filter: blur(20px);
             border-radius: 20px;
             animation: welcomeSlideIn 0.4s ease-out;
@@ -116,8 +116,8 @@
         }
 
         .welcome-screen.success .welcome-content {
-            background: rgba(22, 27, 34, 0.9);
-            box-shadow: 0 0 30px rgba(46, 160, 67, 0.2);
+            background: #161b22e6;
+            box-shadow: 0 0 30px #2ea04333;
         }
 
         .welcome-screen.fade-out {
@@ -154,7 +154,7 @@
         }
 
         .input-section {
-            background: rgba(22, 27, 34, 0.3);
+            background: #161b224d;
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 24px;
@@ -171,7 +171,7 @@
             flex: 1;
             min-width: 200px;
             padding: 14px 18px;
-            background: rgba(13, 17, 23, 0.8);
+            background: #0d1117cc;
             border: none;
             border-radius: 10px;
             color: #e6edf3;
@@ -181,8 +181,8 @@
 
         input[type="text"]:focus {
             outline: none;
-            background: rgba(13, 17, 23, 0.9);
-            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+            background: #0d1117e6;
+            box-shadow: 0 0 0 2px #58a6ff4d;
         }
 
         input[type="text"]::placeholder {
@@ -241,7 +241,7 @@
 
         select:focus {
             outline: none;
-            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+            box-shadow: 0 0 0 2px #58a6ff4d;
         }
 
         .toggle {
@@ -282,7 +282,7 @@
         }
 
         .error {
-            background: rgba(22, 27, 34, 0.8);
+            background: #161b22cc;
             border-radius: 12px;
             padding: 24px;
             margin: 20px 0;
@@ -317,7 +317,7 @@
         }
 
         .comparison-stats {
-            background: rgba(22, 27, 34, 0.3);
+            background: #161b224d;
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
@@ -327,7 +327,7 @@
         .comparison-table {
             width: 100%;
             border-collapse: collapse;
-            background: rgba(13, 17, 23, 0.2);
+            background: #0d111733;
             border-radius: 12px;
             overflow: hidden;
         }
@@ -336,11 +336,11 @@
         .comparison-table td {
             padding: 16px 20px;
             text-align: left;
-            border-bottom: 1px solid rgba(48, 54, 61, 0.3);
+            border-bottom: 1px solid #30363d4d;
         }
 
         .comparison-table th {
-            background: rgba(22, 27, 34, 0.8);
+            background: #161b22cc;
             color: #f0f6fc;
             font-weight: 600;
         }
@@ -369,7 +369,7 @@
 
         /* User Cards */
         .user-card {
-            background: rgba(13, 17, 23, 0.4);
+            background: #0d111766;
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 16px;
@@ -379,16 +379,16 @@
         }
 
         .user-card:hover {
-            background: rgba(22, 27, 34, 0.5);
+            background: #161b2280;
         }
 
         .user-card.primary {
-            background: rgba(22, 27, 34, 0.5);
-            box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.2);
+            background: #161b2280;
+            box-shadow: 0 0 0 1px #58a6ff33;
         }
 
         .user-card.comparison {
-            background: rgba(22, 27, 34, 0.3);
+            background: #161b224d;
         }
 
         .user-header {
@@ -402,7 +402,7 @@
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            border: 2px solid rgba(88, 166, 255, 0.3);
+            border: 2px solid #58a6ff4d;
             flex-shrink: 0;
         }
 
@@ -474,7 +474,7 @@
             font-size: 12px;
             padding: 4px 8px;
             border-radius: 6px;
-            background: rgba(48, 54, 61, 0.3);
+            background: #30363d4d;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
@@ -483,7 +483,7 @@
 
         .user-link:hover {
             color: #58a6ff;
-            background: rgba(88, 166, 255, 0.1);
+            background: #58a6ff1a;
         }
 
         .user-join-date {
@@ -500,7 +500,7 @@
         }
 
         .icon-btn {
-            background: rgba(22, 27, 34, 0.8);
+            background: #161b22cc;
             border: none;
             border-radius: 8px;
             padding: 8px;
@@ -513,7 +513,7 @@
         }
 
         .icon-btn:hover {
-            background: rgba(48, 54, 61, 0.6);
+            background: #30363d99;
             color: #e6edf3;
         }
 
@@ -536,7 +536,7 @@
         .add-user-input input {
             flex: 1;
             padding: 10px 14px;
-            background: rgba(13, 17, 23, 0.8);
+            background: #0d1117cc;
             border: none;
             border-radius: 8px;
             color: #e6edf3;
@@ -545,8 +545,8 @@
 
         .add-user-input input:focus {
             outline: none;
-            background: rgba(13, 17, 23, 0.9);
-            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+            background: #0d1117e6;
+            box-shadow: 0 0 0 2px #58a6ff4d;
         }
 
         /* Metrics Grid */
@@ -558,7 +558,7 @@
         }
 
         .metric-card {
-            background: rgba(22, 27, 34, 0.3);
+            background: #161b224d;
             border-radius: 16px;
             padding: 20px;
             text-align: center;
@@ -634,13 +634,13 @@
         }
 
         .chart-type-card:hover {
-            border-color: rgba(88, 166, 255, 0.6);
+            border-color: #58a6ff99;
             transform: translateY(-1px);
         }
 
         .chart-type-card.active {
-            border-color: rgba(88, 166, 255, 0.8);
-            box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.4);
+            border-color: #58a6ffcc;
+            box-shadow: 0 0 0 1px #58a6ff66;
         }
 
         .chart-type-card .icon {
@@ -663,7 +663,7 @@
 
         /* Charts */
         .chart-section {
-            background: rgba(22, 27, 34, 0.3);
+            background: #161b224d;
             border-radius: 16px;
             padding: 20px;
             backdrop-filter: blur(10px);
@@ -685,13 +685,13 @@
             gap: 8px;
             padding: 6px 12px;
             border-radius: 8px;
-            background: rgba(48, 54, 61, 0.3);
+            background: #30363d4d;
             transition: all 0.2s ease;
             cursor: pointer;
         }
 
         .legend-item:hover {
-            background: rgba(48, 54, 61, 0.5);
+            background: #30363d80;
         }
 
         .legend-item.hidden {
@@ -779,7 +779,7 @@
         .welcome-input-group input {
             width: 100%;
             padding: 18px 24px;
-            background: rgba(13, 17, 23, 0.8);
+            background: #0d1117cc;
             border: none;
             border-radius: 12px;
             color: #e6edf3;
@@ -790,8 +790,8 @@
 
         .welcome-input-group input:focus {
             outline: none;
-            background: rgba(13, 17, 23, 0.9);
-            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+            background: #0d1117e6;
+            box-shadow: 0 0 0 2px #58a6ff4d;
             transform: translateY(-1px);
         }
 
@@ -814,7 +814,7 @@
         .welcome-input-group .btn:hover {
             background: #2ea043;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(35, 134, 54, 0.4);
+            box-shadow: 0 8px 25px #23863666;
         }
 
         .welcome-input-group .btn:active {
@@ -1299,7 +1299,7 @@
                                 // Ensure good contrast and vibrancy
                                 const brightness = (r * 299 + g * 587 + b * 114) / 1000;
                                 if (brightness > 50 && brightness < 200) {
-                                    dominantColor = `rgb(${r}, ${g}, ${b})`;
+                                    dominantColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
                                 }
                             }
                         }
@@ -1327,7 +1327,7 @@
             if (!tooltipEl) {
                 tooltipEl = document.createElement('div');
                 tooltipEl.classList.add('custom-tooltip');
-                tooltipEl.style.background = 'rgba(13, 17, 23, 0.95)';
+                tooltipEl.style.background = '#0d1117f2';
                 tooltipEl.style.borderRadius = '8px';
                 tooltipEl.style.color = '#e6edf3';
                 tooltipEl.style.opacity = 0;
@@ -1336,7 +1336,7 @@
                 tooltipEl.style.transform = 'translate(-50%, 0)';
                 tooltipEl.style.transition = 'all .1s ease';
                 tooltipEl.style.border = '1px solid #30363d';
-                tooltipEl.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.4)';
+                tooltipEl.style.boxShadow = '0 4px 12px #00000066';
                 tooltipEl.style.zIndex = '1000';
 
                 chart.canvas.parentNode.appendChild(tooltipEl);
@@ -1386,6 +1386,8 @@
             }
             
             legendContainer.style.display = 'flex';
+            legendContainer.style.flexDirection = 'row'; // Reset to row for other charts
+            legendContainer.style.gap = '20px'; // Reset gap
             legendContainer.innerHTML = '';
             
             datasets.forEach((dataset, index) => {
@@ -2036,7 +2038,7 @@
             if (!sharedTooltip) {
                 sharedTooltip = document.createElement('div');
                 sharedTooltip.id = 'shared-heatmap-tooltip';
-                sharedTooltip.style.background = 'rgba(13, 17, 23, 0.95)';
+                sharedTooltip.style.background = '#0d1117f2';
                 sharedTooltip.style.borderRadius = '8px';
                 sharedTooltip.style.color = '#e6edf3';
                 sharedTooltip.style.opacity = '0';
@@ -2046,7 +2048,7 @@
                 sharedTooltip.style.fontSize = '13px';
                 sharedTooltip.style.zIndex = '1000';
                 sharedTooltip.style.border = '1px solid #30363d';
-                sharedTooltip.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.4)';
+                sharedTooltip.style.boxShadow = '0 4px 12px #00000066';
                 sharedTooltip.style.transition = 'opacity 0.2s ease';
                 sharedTooltip.style.transform = 'translate(-50%, -100%)';
                 
@@ -2135,12 +2137,12 @@
                         const rgb = hexToRgb(baseColor) || { r: 88, g: 166, b: 255 };
                         // Use different intensities: 0.3, 0.5, 0.7, 1.0
                         let alpha;
-                        if (intensity <= 0.25) alpha = 0.3;
-                        else if (intensity <= 0.5) alpha = 0.5;
-                        else if (intensity <= 0.75) alpha = 0.7;
-                        else alpha = 1.0;
+                        if (intensity <= 0.25) alpha = '4d'; // 30% opacity
+                        else if (intensity <= 0.5) alpha = '80'; // 50% opacity
+                        else if (intensity <= 0.75) alpha = 'b3'; // 70% opacity
+                        else alpha = 'ff'; // 100% opacity
                         
-                        color = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+                        color = `#${rgb.r.toString(16).padStart(2, '0')}${rgb.g.toString(16).padStart(2, '0')}${rgb.b.toString(16).padStart(2, '0')}${alpha}`;
                     }
                     
                     rect.setAttribute('fill', color);
@@ -2239,6 +2241,8 @@
         // Function to render heatmap legend
         function renderHeatmapLegend() {
             const legendContainer = document.getElementById('chartLegend');
+            legendContainer.style.flexDirection = 'row'; // Reset to row
+            legendContainer.style.gap = '20px'; // Reset gap
             legendContainer.innerHTML = '';
             
             for (const [username, userData] of usersData) {
@@ -2579,180 +2583,345 @@
             renderCustomLegend(barChartInstance);
         }
 
+        // Track hidden days for donut charts
+        let hiddenDays = new Set();
+        let donutChartInstances = [];
+
         function showDonutChart(data) {
             const container = document.getElementById('donutChart');
             container.style.display = 'block';
             
-            if (donutChartInstance) {
-                donutChartInstance.destroy();
+            // Clear any existing chart instances
+            donutChartInstances.forEach(instance => {
+                if (instance) instance.destroy();
+            });
+            donutChartInstances = [];
+            
+            // Show global toggleable legend
+            renderGlobalDonutLegend();
+            document.getElementById('chartLegend').style.display = 'flex';
+            
+            container.innerHTML = '';
+            container.style.height = 'auto';
+            container.style.overflow = 'visible';
+            
+            // Create grid container
+            const gridContainer = document.createElement('div');
+            gridContainer.style.display = 'grid';
+            gridContainer.style.gridTemplateColumns = 'repeat(3, 1fr)';
+            gridContainer.style.gap = '24px';
+            gridContainer.style.maxWidth = '1200px';
+            gridContainer.style.margin = '0 auto';
+            gridContainer.style.padding = '20px';
+            
+            // Responsive adjustments
+            const mobileQuery = window.matchMedia('(max-width: 768px)');
+            const tabletQuery = window.matchMedia('(max-width: 1024px)');
+            
+            if (mobileQuery.matches) {
+                gridContainer.style.gridTemplateColumns = '1fr';
+                gridContainer.style.gap = '20px';
+                gridContainer.style.padding = '16px';
+            } else if (tabletQuery.matches) {
+                gridContainer.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                gridContainer.style.gap = '20px';
             }
             
-            const ctx = document.getElementById('donutCanvas').getContext('2d');
+            container.appendChild(gridContainer);
             
-            // Calculate day-of-week statistics for the current user
-            const dayStats = {
-                'Sunday': 0,
-                'Monday': 0,
-                'Tuesday': 0,
-                'Wednesday': 0,
-                'Thursday': 0,
-                'Friday': 0,
-                'Saturday': 0
-            };
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             
-            // Process current user's data
-            if (currentUser && usersData.has(currentUser)) {
-                const userData = usersData.get(currentUser);
+            // Create individual donut charts for each user
+            for (const [username, userData] of usersData) {
+                const userContainer = document.createElement('div');
+                userContainer.style.position = 'relative';
+                userContainer.style.background = '#161b224d';
+                userContainer.style.borderRadius = '16px';
+                userContainer.style.padding = '20px';
+                userContainer.style.backdropFilter = 'blur(10px)';
+                
+                // User label above chart
+                const userLabel = document.createElement('div');
+                userLabel.style.color = '#f0f6fc';
+                userLabel.style.fontSize = '16px';
+                userLabel.style.fontWeight = '600';
+                userLabel.style.marginBottom = '16px';
+                userLabel.style.textAlign = 'center';
+                userLabel.style.display = 'flex';
+                userLabel.style.alignItems = 'center';
+                userLabel.style.justifyContent = 'center';
+                userLabel.style.gap = '10px';
+                
+                const smallAvatar = document.createElement('img');
+                smallAvatar.src = userData.userData.avatar_url;
+                smallAvatar.style.width = '20px';
+                smallAvatar.style.height = '20px';
+                smallAvatar.style.borderRadius = '50%';
+                smallAvatar.style.border = `2px solid ${userData.dominantColor}`;
+                smallAvatar.style.objectFit = 'cover';
+                
+                userLabel.appendChild(smallAvatar);
+                userLabel.appendChild(document.createTextNode(username));
+                userContainer.appendChild(userLabel);
+                
+                // Calculate day-of-week statistics for this user
+                const dayStats = dayNames.reduce((acc, day) => ({ ...acc, [day]: 0 }), {});
+                
                 userData.filteredContributions.forEach(item => {
                     const date = new Date(item.date);
                     const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
                     dayStats[dayName] += item.contributions;
                 });
-            }
-            
-            const dayNames = Object.keys(dayStats);
-            const dayValues = Object.values(dayStats);
-            const totalContributions = dayValues.reduce((sum, val) => sum + val, 0);
-            
-            // Find the most active day
-            const maxValue = Math.max(...dayValues);
-            const mostActiveDay = dayNames[dayValues.indexOf(maxValue)];
-            
-            // Generate colors based on user's dominant color
-            const baseColor = currentUser && usersData.has(currentUser) ? 
-                usersData.get(currentUser).dominantColor || '#58a6ff' : '#58a6ff';
-            const rgb = hexToRgb(baseColor) || { r: 88, g: 166, b: 255 };
-            
-            const colors = dayNames.map((_, index) => {
-                const intensity = 0.3 + (index * 0.1); // Varying intensity
-                return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${intensity})`;
-            });
-            
-            // Hide default legend, we'll show custom info
-            document.getElementById('chartLegend').style.display = 'none';
-            
-            donutChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: dayNames,
-                    datasets: [{
-                        data: dayValues,
-                        backgroundColor: colors,
-                        borderColor: colors.map(color => color.replace('rgba', 'rgba').replace(/,\s*[\d.]+\)/, ', 1)')),
-                        borderWidth: 2,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '60%',
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                color: '#e6edf3',
-                                padding: 20,
-                                font: {
-                                    size: 14,
-                                    family: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif'
-                                },
-                                boxWidth: 20,
-                                boxHeight: 14,
-                                usePointStyle: false,
-                                generateLabels: function(chart) {
-                                    const data = chart.data;
-                                    return data.labels.map((label, index) => {
-                                        const value = data.datasets[0].data[index];
+                
+                // Filter out hidden days
+                const visibleDayNames = dayNames.filter(day => !hiddenDays.has(day));
+                const visibleDayValues = visibleDayNames.map(day => dayStats[day]);
+                const totalContributions = visibleDayValues.reduce((sum, val) => sum + val, 0);
+                
+                if (totalContributions === 0) {
+                    const noDataMsg = document.createElement('div');
+                    noDataMsg.style.color = '#8b949e';
+                    noDataMsg.style.fontStyle = 'italic';
+                    noDataMsg.style.padding = '40px 20px';
+                    noDataMsg.style.textAlign = 'center';
+                    noDataMsg.textContent = 'No data for selected period';
+                    userContainer.appendChild(noDataMsg);
+                    gridContainer.appendChild(userContainer);
+                    continue;
+                }
+                
+                // Find the most active visible day
+                const maxValue = Math.max(...visibleDayValues);
+                const mostActiveDayIndex = visibleDayValues.indexOf(maxValue);
+                const mostActiveDay = visibleDayNames[mostActiveDayIndex];
+                const mostActiveDayPercentage = ((maxValue / totalContributions) * 100).toFixed(1);
+                
+                // Use EXACT same color as line chart - no RGB manipulation
+                const baseColor = userData.dominantColor || '#58a6ff';
+                
+                // Create day-specific opacity variations to make days easily distinguishable
+                const dayOpacityMap = {
+                    'Sunday': 'FF',     // Full opacity for weekend
+                    'Monday': '99',     // Lower opacity for Monday blues (0.6)
+                    'Tuesday': 'B3',    // Gradually increasing (0.7)
+                    'Wednesday': 'CC',  // Mid-week (0.8)
+                    'Thursday': 'E6',   // Almost there (0.9)
+                    'Friday': 'F2',     // TGIF energy (0.95)
+                    'Saturday': 'FF'    // Full opacity for weekend
+                };
+                
+                const colors = visibleDayNames.map((dayName) => {
+                    const opacity = dayOpacityMap[dayName] || 0.8;
+                    return baseColor.includes('rgb') ? 
+                        baseColor.replace(/[\d.]+\)$/, `${opacity})`) :
+                        `${baseColor}${opacity}`;
+                });
+
+                console.log(colors);
+                
+                // Create canvas for this user
+                const canvas = document.createElement('canvas');
+                canvas.style.width = '100%';
+                canvas.style.height = '250px';
+                canvas.style.maxHeight = '250px';
+                
+                userContainer.appendChild(canvas);
+                
+                const ctx = canvas.getContext('2d');
+                
+                const chartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: visibleDayNames,
+                        datasets: [{
+                            data: visibleDayValues,
+                            backgroundColor: colors,
+                            borderColor: baseColor,
+                            borderWidth: 2,
+                            hoverOffset: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false,
+                                external: function(context) {
+                                    const tooltip = context.tooltip;
+                                    
+                                    // Create or get shared tooltip
+                                    let sharedTooltip = document.getElementById('shared-donut-tooltip');
+                                    if (!sharedTooltip) {
+                                        sharedTooltip = document.createElement('div');
+                                        sharedTooltip.id = 'shared-donut-tooltip';
+                                        sharedTooltip.style.background = '#0d1117f2';
+                                        sharedTooltip.style.borderRadius = '8px';
+                                        sharedTooltip.style.color = '#e6edf3';
+                                        sharedTooltip.style.opacity = '0';
+                                        sharedTooltip.style.pointerEvents = 'none';
+                                        sharedTooltip.style.position = 'fixed';
+                                        sharedTooltip.style.padding = '8px';
+                                        sharedTooltip.style.fontSize = '13px';
+                                        sharedTooltip.style.zIndex = '1000';
+                                        sharedTooltip.style.border = '1px solid #30363d';
+                                        sharedTooltip.style.boxShadow = '0 4px 12px #00000066';
+                                        sharedTooltip.style.transition = 'opacity 0.2s ease';
+                                        sharedTooltip.style.transform = 'translate(-50%, -100%)';
+                                        
+                                        document.body.appendChild(sharedTooltip);
+                                    }
+
+                                    // Hide if no tooltip
+                                    if (tooltip.opacity === 0) {
+                                        sharedTooltip.style.opacity = 0;
+                                        return;
+                                    }
+
+                                    // Set Text
+                                    if (tooltip.body && tooltip.dataPoints.length > 0) {
+                                        const dataPoint = tooltip.dataPoints[0];
+                                        const dayName = visibleDayNames[dataPoint.dataIndex];
+                                        const contributions = dataPoint.parsed;
                                         const percentage = totalContributions > 0 ? 
-                                            ((value / totalContributions) * 100).toFixed(1) : 0;
-                                        return {
-                                            text: `${label}: ${value} (${percentage}%)`,
-                                            fillStyle: data.datasets[0].backgroundColor[index],
-                                            strokeStyle: data.datasets[0].borderColor[index],
-                                            lineWidth: 2,
-                                            hidden: false,
-                                            index: index,
-                                            fontColor: '#e6edf3'
-                                        };
-                                    });
+                                            ((contributions / totalContributions) * 100).toFixed(1) : 0;
+
+                                        const tooltipContent = generateTooltipContent([{
+                                            username: username,
+                                            contributions: `${contributions} (${percentage}%)`,
+                                            color: baseColor
+                                        }], dayName);
+                                        
+                                        sharedTooltip.innerHTML = tooltipContent;
+                                    }
+
+                                    // Position tooltip at mouse cursor  
+                                    sharedTooltip.style.left = tooltip.x + 'px';
+                                    sharedTooltip.style.top = tooltip.y + 'px';
+                                    sharedTooltip.style.opacity = '1';
                                 }
                             }
                         },
-                        tooltip: {
-                            enabled: false,
-                            external: function(context) {
-                                const tooltip = context.tooltip;
-                                const tooltipEl = getOrCreateTooltip(context.chart);
-
-                                // Hide if no tooltip
-                                if (tooltip.opacity === 0) {
-                                    tooltipEl.style.opacity = 0;
-                                    return;
-                                }
-
-                                // Set Text
-                                if (tooltip.body) {
-                                    const dataIndex = tooltip.dataPoints[0].dataIndex;
-                                    const dayName = dayNames[dataIndex];
-                                    const contributions = dayValues[dataIndex];
-                                    const percentage = totalContributions > 0 ? 
-                                        ((contributions / totalContributions) * 100).toFixed(1) : 0;
-
-                                    const tooltipContent = generateTooltipContent([{
-                                        username: currentUser,
-                                        contributions: `${contributions} (${percentage}%)`,
-                                        color: baseColor
-                                    }], dayName);
-                                    
-                                    tooltipEl.innerHTML = tooltipContent;
-                                }
-
-                                const {offsetLeft: positionX, offsetTop: positionY} = context.chart.canvas;
-
-                                // Display, position, and set styles
-                                tooltipEl.style.opacity = 1;
-                                tooltipEl.style.position = 'absolute';
-                                tooltipEl.style.left = positionX + tooltip.caretX + 'px';
-                                tooltipEl.style.top = positionY + tooltip.caretY + 'px';
-                                tooltipEl.style.transform = 'translate(-50%, -100%)';
-                            }
+                        onHover: (event, activeElements) => {
+                            event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
                         }
                     },
-                    onHover: (event, activeElements) => {
-                        event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+                    plugins: [{
+                        id: 'centerText',
+                        beforeDraw: function(chart) {
+                            const ctx = chart.ctx;
+                            const centerX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
+                            const centerY = chart.chartArea.top + (chart.chartArea.bottom - chart.chartArea.top) / 2;
+                            
+                            // Draw most active day text in center
+                            ctx.save();
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            
+                            // Draw "Most busy on" label
+                            ctx.fillStyle = '#8b949e';
+                            ctx.font = '12px "Segoe UI", sans-serif';
+                            ctx.fillText('Most busy on', centerX, centerY - 10);
+                            
+                            // Draw the day and percentage
+                            ctx.fillStyle = baseColor;
+                            ctx.font = 'bold 14px "Segoe UI", sans-serif';
+                            ctx.fillText(`${mostActiveDay} (${mostActiveDayPercentage}%)`, centerX, centerY + 10);
+                            ctx.restore();
+                        }
+                    }]
+                });
+                
+                donutChartInstances.push(chartInstance);
+                gridContainer.appendChild(userContainer);
+            }
+        }
+        
+        // Helper function to convert hex to rgba (8-digit hex)
+        function hexToRgba(hex, alpha) {
+            const rgb = hexToRgb(hex);
+            if (!rgb) return hex;
+            const alphaHex = Math.round(alpha * 255).toString(16).padStart(2, '0');
+            return `#${rgb.r.toString(16).padStart(2, '0')}${rgb.g.toString(16).padStart(2, '0')}${rgb.b.toString(16).padStart(2, '0')}${alphaHex}`;
+        }
+        
+        // Function to render global toggleable donut chart legend
+        function renderGlobalDonutLegend() {
+            const legendContainer = document.getElementById('chartLegend');
+            legendContainer.innerHTML = '';
+            legendContainer.style.flexDirection = 'row';
+            legendContainer.style.gap = '16px';
+            legendContainer.style.justifyContent = 'center';
+            legendContainer.style.flexWrap = 'wrap';
+            
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayAbbrevs = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            
+            dayNames.forEach((dayName, index) => {
+                const dayItem = document.createElement('div');
+                dayItem.className = 'legend-item';
+                dayItem.dataset.day = dayName;
+                dayItem.style.padding = '8px 12px';
+                dayItem.style.borderRadius = '8px';
+                dayItem.style.background = '#30363d4d';
+                dayItem.style.minWidth = '50px';
+                dayItem.style.textAlign = 'center';
+                dayItem.style.cursor = 'pointer';
+                dayItem.style.transition = 'all 0.2s ease';
+                dayItem.style.border = '2px solid transparent';
+                dayItem.style.fontSize = '12px';
+                dayItem.style.fontWeight = '500';
+                dayItem.style.color = '#e6edf3';
+                
+                // Apply hidden state if day is hidden
+                if (hiddenDays.has(dayName)) {
+                    dayItem.classList.add('hidden');
+                    dayItem.style.opacity = '0.4';
+                    dayItem.style.background = '#30363d1a';
+                    dayItem.style.color = '#6e7681';
+                }
+                
+                dayItem.textContent = dayAbbrevs[index];
+                
+                // Add click handler to toggle day visibility
+                dayItem.addEventListener('click', () => {
+                    if (hiddenDays.has(dayName)) {
+                        hiddenDays.delete(dayName);
+                        dayItem.classList.remove('hidden');
+                        dayItem.style.opacity = '1';
+                        dayItem.style.background = '#30363d4d';
+                        dayItem.style.color = '#e6edf3';
+                    } else {
+                        hiddenDays.add(dayName);
+                        dayItem.classList.add('hidden');
+                        dayItem.style.opacity = '0.4';
+                        dayItem.style.background = '#30363d1a';
+                        dayItem.style.color = '#6e7681';
                     }
-                },
-                plugins: [{
-                    id: 'centerText',
-                    beforeDraw: function(chart) {
-                        const ctx = chart.ctx;
-                        const centerX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
-                        const centerY = chart.chartArea.top + (chart.chartArea.bottom - chart.chartArea.top) / 2;
-                        
-                        ctx.save();
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        
-                        // Most busy day
-                        ctx.fillStyle = '#8b949e';
-                        ctx.font = '14px "Segoe UI", sans-serif';
-                        ctx.fillText('Most busy on', centerX, centerY - 15);
-                        
-                        ctx.fillStyle = '#f0f6fc';
-                        ctx.font = 'bold 18px "Segoe UI", sans-serif';
-                        ctx.fillText(mostActiveDay, centerX, centerY + 5);
-                        
-                        // Percentage
-                        const percentage = totalContributions > 0 ? 
-                            ((maxValue / totalContributions) * 100).toFixed(1) : 0;
-                        ctx.fillStyle = baseColor;
-                        ctx.font = '12px "Segoe UI", sans-serif';
-                        ctx.fillText(`${percentage}%`, centerX, centerY + 25);
-                        
-                        ctx.restore();
+                    // Re-render all donut charts
+                    updateChart();
+                });
+                
+                // Hover effects
+                dayItem.addEventListener('mouseenter', () => {
+                    if (!hiddenDays.has(dayName)) {
+                        dayItem.style.background = '#58a6ff33';
+                        dayItem.style.borderColor = '#58a6ff66';
                     }
-                }]
+                });
+                
+                dayItem.addEventListener('mouseleave', () => {
+                    if (!hiddenDays.has(dayName)) {
+                        dayItem.style.background = '#30363d4d';
+                        dayItem.style.borderColor = 'transparent';
+                    }
+                });
+                
+                legendContainer.appendChild(dayItem);
             });
         }
 
