@@ -391,6 +391,27 @@
 
       .user-name {
         text-decoration: none;
+        color: inherit;
+        transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .external-icon {
+        display: inline-block;
+        margin-left: 4px;
+        vertical-align: middle;
+        width: 14px;
+        height: 14px;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+      }
+
+      .user-name:hover .external-icon,
+      .user-name:hover h3 {
+        opacity: 1;
+        color: #58a6ff;
       }
 
       .user-avatar {
@@ -515,6 +536,21 @@
       .icon-btn.danger:hover {
         background: #da3633;
         color: white;
+      }
+
+      /* Loading spinner */
+      .loading-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid #8b949e;
+        border-top: 2px solid #58a6ff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
       }
 
       /* Add User Section */
@@ -1173,12 +1209,13 @@
               onclick="fetchComparisonData()"
               title="Add User"
             >
-              <i data-lucide="plus" style="width: 16px; height: 16px"></i>
+              <i id="addUserPlusIcon" data-lucide="plus" style="width: 16px; height: 16px"></i>
             </button>
             <button class="icon-btn" onclick="toggleAddUser()" title="Cancel">
               <i data-lucide="x" style="width: 16px; height: 16px"></i>
             </button>
           </div>
+          <div id="addUserError" class="error" style="display: none"></div>
         </div>
       </div>
 
@@ -1746,7 +1783,7 @@
                           userData.html_url
                         }" target="_blank" class="user-name"><h3>${
           userData.name || userData.login
-        }</h3></a>
+        }</h3><i data-lucide="external-link" class="external-icon" style="width: 14px; height: 14px;"></i></a>
                         <div class="username">@${userData.login}</div>
                     </div>
                 </div>
@@ -1817,8 +1854,43 @@
 
         if (!isVisible) {
           document.getElementById("compareHandle").focus();
+          hideAddUserError(); // Hide any existing error when opening
         } else {
           document.getElementById("compareHandle").value = "";
+          hideAddUserError(); // Hide error when closing
+        }
+      }
+
+      // Helper functions to manage plus button loading state
+      function showPlusButtonLoading() {
+        const plusButton = document.querySelector('.add-user-input .icon-btn[title="Add User"]');
+        if (plusButton) {
+          plusButton.disabled = true;
+          const icon = document.getElementById('addUserPlusIcon');
+          if (icon) {
+            icon.style.display = 'none';
+          }
+          // Add loading spinner
+          const spinner = document.createElement('div');
+          spinner.className = 'loading-spinner';
+          spinner.id = 'plus-button-spinner';
+          plusButton.appendChild(spinner);
+        }
+      }
+
+      function hidePlusButtonLoading() {
+        const plusButton = document.querySelector('.add-user-input .icon-btn[title="Add User"]');
+        if (plusButton) {
+          plusButton.disabled = false;
+          const icon = document.getElementById('addUserPlusIcon');
+          if (icon) {
+            icon.style.display = 'block';
+          }
+          // Remove loading spinner
+          const spinner = document.getElementById('plus-button-spinner');
+          if (spinner) {
+            spinner.remove();
+          }
         }
       }
 
@@ -1826,22 +1898,22 @@
       async function fetchComparisonData() {
         const username = document.getElementById("compareHandle").value.trim();
         if (!username) {
-          showError("Please enter a username to compare with");
+          showAddUserError("Please enter a username to compare with");
           return;
         }
 
         if (usersData.has(username)) {
-          showError("User already added");
+          showAddUserError("User already added");
           return;
         }
 
         if (usersData.size >= MAX_USERS) {
-          showError(`Maximum ${MAX_USERS} users allowed`);
+          showAddUserError(`Maximum ${MAX_USERS} users allowed`);
           return;
         }
 
-        showLoading(true);
-        hideError();
+        showPlusButtonLoading();
+        hideAddUserError();
 
         const { fromDate, toDate } = getFullYearRange();
         let contributionsUrl = `https://github.com/users/${username}/contributions?from=${fromDate}&to=${toDate}`;
@@ -1902,10 +1974,10 @@
           // Clear the comparison input field
           document.getElementById("compareHandle").value = "";
         } catch (error) {
-          showError(`Error fetching user data: ${error.message}`);
+          showAddUserError(error.message);
           console.error("Fetch error:", error);
         } finally {
-          showLoading(false);
+          hidePlusButtonLoading();
         }
       }
 
@@ -3644,6 +3716,16 @@
         document.getElementById("error").style.display = "none";
       }
 
+      function showAddUserError(message) {
+        const errorDiv = document.getElementById("addUserError");
+        errorDiv.textContent = message;
+        errorDiv.style.display = "block";
+      }
+
+      function hideAddUserError() {
+        document.getElementById("addUserError").style.display = "none";
+      }
+
       // Allow Enter key to trigger search
       document
         .getElementById("githubHandle")
@@ -3660,6 +3742,13 @@
           if (e.key === "Enter") {
             fetchComparisonData();
           }
+        });
+
+      // Hide add user error when user starts typing
+      document
+        .getElementById("compareHandle")
+        .addEventListener("input", function (e) {
+          hideAddUserError();
         });
 
       // Initialize Lucide icons and focus input when page loads
