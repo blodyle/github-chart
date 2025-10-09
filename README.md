@@ -27,3 +27,8 @@ View the app at: **https://blodyle.github.io/github-chart/**
 
 Created by [@guidelamego](https://x.com/guidelamego)
 
+## Other Projects
+
+- [**HouseMunny**](https://www.housemunny.com) - Stop wondering where your money went | Personal Finance
+- [**Dress-it**](https://www.dress-it.com) - A virtual try on tool to simplify your online shopping | Fashion
+
