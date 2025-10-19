@@ -1286,6 +1286,22 @@
                 />
                 <label for="cumulative">Cumulative</label>
               </div>
+              <div class="control-group">
+                <input
+                  type="checkbox"
+                  id="movingAverage"
+                  onchange="updateChart()"
+                />
+                <label for="movingAverage">Moving Average</label>
+                <input
+                  type="number"
+                  id="maWindow"
+                  min="2"
+                  value="4"
+                  style="width: 64px; margin-left: 8px"
+                  onchange="updateChart()"
+                />
+              </div>
             </div>
           </div>
 
@@ -1555,6 +1571,9 @@
         legendContainer.innerHTML = "";
 
         datasets.forEach((dataset, index) => {
+          // Skip moving average series in the legend
+          if (dataset.isMovingAverage) return;
+
           const username = dataset.label;
           const userDataEntry = usersData.get(username);
           const color = dataset.borderColor || dataset.backgroundColor;
@@ -1576,11 +1595,21 @@
           legendItem.appendChild(avatar);
           legendItem.appendChild(text);
 
-          // Add click handler to toggle dataset visibility
+          // Add click handler to toggle dataset visibility plus its MA
           legendItem.addEventListener("click", () => {
-            const meta = chart.getDatasetMeta(index);
-            meta.hidden = !meta.hidden;
-            legendItem.classList.toggle("hidden", meta.hidden);
+            const baseIndex = index;
+            const baseMeta = chart.getDatasetMeta(baseIndex);
+            baseMeta.hidden = !baseMeta.hidden;
+            legendItem.classList.toggle("hidden", baseMeta.hidden);
+
+            // Toggle corresponding MA dataset(s)
+            chart.data.datasets.forEach((ds, dsIndex) => {
+              if (ds.isMovingAverage && ds.parentIndex === baseIndex) {
+                const maMeta = chart.getDatasetMeta(dsIndex);
+                maMeta.hidden = baseMeta.hidden;
+              }
+            });
+
             chart.update();
           });
 
@@ -2215,6 +2244,26 @@
         }));
       }
 
+      // Compute simple moving average over an array of numeric values
+      function computeMovingAverage(values, windowSize) {
+        const result = new Array(values.length).fill(null);
+        const n = parseInt(windowSize, 10);
+        if (!Number.isFinite(n) || n <= 1) return result;
+        let sum = 0;
+        for (let i = 0; i < values.length; i++) {
+          const current = Number(values[i]) || 0;
+          sum += current;
+          if (i >= n) {
+            const toRemove = Number(values[i - n]) || 0;
+            sum -= toRemove;
+          }
+          if (i >= n - 1) {
+            result[i] = sum / n;
+          }
+        }
+        return result;
+      }
+
       // Global variable to track current chart type
       let currentChartType = "line";
 
@@ -2251,6 +2300,13 @@
         const chartType = currentChartType;
         const isCumulative = document.getElementById("cumulative").checked;
         const aggregationType = document.getElementById("aggregation").value;
+
+        // Enable/disable MA window control based on checkbox
+        const maCheckbox = document.getElementById("movingAverage");
+        const maWindowInput = document.getElementById("maWindow");
+        if (maWindowInput) {
+          maWindowInput.disabled = !(maCheckbox && maCheckbox.checked);
+        }
 
         // Use current user's data for the primary display
         let processedData = aggregateData(
@@ -2805,6 +2861,7 @@
             userData.dominantColor ||
             fallbackColors[colorIndex % fallbackColors.length];
 
+          // Base user series
           datasets.push({
             label: username,
             data: processedData.map((d) => d.contributions),
@@ -2814,6 +2871,33 @@
             fill: false, // No fill for clean line chart
             tension: 0.4,
           });
+
+          // Optional moving average overlay per user
+          const maEnabled = document.getElementById("movingAverage").checked;
+          const windowSize = parseInt(
+            document.getElementById("maWindow").value || "0",
+            10
+          );
+          if (maEnabled && Number.isFinite(windowSize) && windowSize > 1) {
+            const values = processedData.map((d) => d.contributions);
+            const maValues = computeMovingAverage(values, windowSize);
+            // Parent index is the dataset we just added
+            const parentIndex = datasets.length - 1;
+            datasets.push({
+              label: `${username} MA(${windowSize})`,
+              data: maValues,
+              borderColor: color,
+              backgroundColor: "transparent",
+              borderWidth: 2,
+              borderDash: [6, 3],
+              fill: false,
+              tension: 0.4,
+              pointRadius: 0,
+              isMovingAverage: true,
+              parentIndex: parentIndex,
+              spanGaps: true,
+            });
+          }
 
           colorIndex++;
         }
@@ -2868,15 +2952,17 @@
                     });
 
                     // Use unified tooltip function
-                    const dataPoints = tooltip.dataPoints.map(function (
-                      dataPoint
-                    ) {
-                      return {
-                        username: dataPoint.dataset.label,
-                        contributions: dataPoint.parsed.y,
-                        color: dataPoint.dataset.borderColor,
-                      };
-                    });
+                    const dataPoints = tooltip.dataPoints
+                      .filter(function (dp) {
+                        return !dp.dataset.isMovingAverage;
+                      })
+                      .map(function (dataPoint) {
+                        return {
+                          username: dataPoint.dataset.label,
+                          contributions: dataPoint.parsed.y,
+                          color: dataPoint.dataset.borderColor,
+                        };
+                      });
 
                     tooltipEl.innerHTML = generateTooltipContent(
                       dataPoints,
@@ -2981,7 +3067,36 @@
             backgroundColor: color,
             borderColor: color,
             borderWidth: 1,
+            order: 0,
           });
+
+          // Optional moving average overlay per user (as a line on bar chart)
+          const maEnabled = document.getElementById("movingAverage").checked;
+          const windowSize = parseInt(
+            document.getElementById("maWindow").value || "0",
+            10
+          );
+          if (maEnabled && Number.isFinite(windowSize) && windowSize > 1) {
+            const values = processedData.map((d) => d.contributions);
+            const maValues = computeMovingAverage(values, windowSize);
+            const parentIndex = datasets.length - 1;
+            datasets.push({
+              type: "line",
+              label: `${username} MA(${windowSize})`,
+              data: maValues,
+              borderColor: color,
+              backgroundColor: "transparent",
+              borderWidth: 2,
+              borderDash: [6, 3],
+              fill: false,
+              tension: 0.4,
+              pointRadius: 0,
+              isMovingAverage: true,
+              parentIndex: parentIndex,
+              spanGaps: true,
+              order: 1,
+            });
+          }
 
           colorIndex++;
         }
@@ -3036,15 +3151,17 @@
                     });
 
                     // Use unified tooltip function
-                    const dataPoints = tooltip.dataPoints.map(function (
-                      dataPoint
-                    ) {
-                      return {
-                        username: dataPoint.dataset.label,
-                        contributions: dataPoint.parsed.y,
-                        color: dataPoint.dataset.borderColor,
-                      };
-                    });
+                    const dataPoints = tooltip.dataPoints
+                      .filter(function (dp) {
+                        return !dp.dataset.isMovingAverage;
+                      })
+                      .map(function (dataPoint) {
+                        return {
+                          username: dataPoint.dataset.label,
+                          contributions: dataPoint.parsed.y,
+                          color: dataPoint.dataset.borderColor,
+                        };
+                      });
 
                     tooltipEl.innerHTML = generateTooltipContent(
                       dataPoints,
