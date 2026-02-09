@@ -549,8 +549,12 @@
       }
 
       @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
       }
 
       /* Add User Section */
@@ -1209,7 +1213,11 @@
               onclick="fetchComparisonData()"
               title="Add User"
             >
-              <i id="addUserPlusIcon" data-lucide="plus" style="width: 16px; height: 16px"></i>
+              <i
+                id="addUserPlusIcon"
+                data-lucide="plus"
+                style="width: 16px; height: 16px"
+              ></i>
             </button>
             <button class="icon-btn" onclick="toggleAddUser()" title="Cancel">
               <i data-lucide="x" style="width: 16px; height: 16px"></i>
@@ -1624,16 +1632,21 @@
             throw new Error("User not found");
           }
 
-          // Use CORS proxy since GitHub doesn't send Access-Control-Allow-Origin
-          const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(
-            contributionsUrl
-          )}`;
-          const contributionsResponse = await fetch(proxyUrl);
+          // try fetching contributions directly
+          let contributionsResponse = await fetch(contributionsUrl);
 
           if (!contributionsResponse.ok) {
-            throw new Error(
-              `Failed to fetch contributions data (HTTP ${contributionsResponse.status})`
-            );
+            // Use CORS proxy since GitHub doesn't send Access-Control-Allow-Origin
+            const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(
+              contributionsUrl
+            )}`;
+
+            contributionsResponse = await fetch(proxyUrl);
+            if (!contributionsResponse.ok) {
+              throw new Error(
+                `Failed to fetch contributions data (HTTP ${contributionsResponse.status})`
+              );
+            }
           }
 
           const responseHtml = await contributionsResponse.text();
@@ -1863,31 +1876,35 @@
 
       // Helper functions to manage plus button loading state
       function showPlusButtonLoading() {
-        const plusButton = document.querySelector('.add-user-input .icon-btn[title="Add User"]');
+        const plusButton = document.querySelector(
+          '.add-user-input .icon-btn[title="Add User"]'
+        );
         if (plusButton) {
           plusButton.disabled = true;
-          const icon = document.getElementById('addUserPlusIcon');
+          const icon = document.getElementById("addUserPlusIcon");
           if (icon) {
-            icon.style.display = 'none';
+            icon.style.display = "none";
           }
           // Add loading spinner
-          const spinner = document.createElement('div');
-          spinner.className = 'loading-spinner';
-          spinner.id = 'plus-button-spinner';
+          const spinner = document.createElement("div");
+          spinner.className = "loading-spinner";
+          spinner.id = "plus-button-spinner";
           plusButton.appendChild(spinner);
         }
       }
 
       function hidePlusButtonLoading() {
-        const plusButton = document.querySelector('.add-user-input .icon-btn[title="Add User"]');
+        const plusButton = document.querySelector(
+          '.add-user-input .icon-btn[title="Add User"]'
+        );
         if (plusButton) {
           plusButton.disabled = false;
-          const icon = document.getElementById('addUserPlusIcon');
+          const icon = document.getElementById("addUserPlusIcon");
           if (icon) {
-            icon.style.display = 'block';
+            icon.style.display = "block";
           }
           // Remove loading spinner
-          const spinner = document.getElementById('plus-button-spinner');
+          const spinner = document.getElementById("plus-button-spinner");
           if (spinner) {
             spinner.remove();
           }
