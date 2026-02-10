@@ -1,4 +1,4 @@
-# GitHub Contribution Chart
+# GitHub Contribution Chart 
 
 A web application to visualize and compare GitHub contributions with interactive charts.
 
